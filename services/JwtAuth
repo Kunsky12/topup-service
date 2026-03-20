@@ -1,0 +1,63 @@
+// JwtAuth.js
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+// Secret key validation
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
+if (!SECRET_KEY) {
+    console.error("JWT_SECRET_KEY is not set in environment variables");
+    process.exit(1); // Or handle this appropriately
+}
+
+/**
+ * Generate a JWT token for service-to-service authentication
+ * @returns {string} JWT token
+ */
+function generateServiceToken() {
+    try {
+        const payload = {
+            sub: "notification-service",
+            role: "service"
+            // iat (issued at) is automatically added by jsonwebtoken
+        };
+
+        const options = {
+            algorithm: 'HS256',
+            expiresIn: '12h',
+        };
+
+        return jwt.sign(payload, SECRET_KEY, options);
+    } catch (error) {
+        console.error("Error generating service token:", error.message);
+        throw error;
+    }
+}
+
+// Verify function for completeness
+function verifyServiceToken(token) {
+    try {
+        const decoded = jwt.verify(token, SECRET_KEY, {
+            algorithms: ['HS256']
+        });
+        
+        // Additional validation
+        if (decoded.role !== 'service') {
+            throw new Error('Invalid role: expected service');
+        }
+        
+        return decoded;
+    } catch (error) {
+        console.error("Token verification failed:", error.message);
+        return null;
+    }
+}
+
+// Example usage:
+const token = generateServiceToken();
+console.log("Generated token:", token);
+
+// Verify the token
+const decoded = verifyServiceToken(token);
+console.log("Decoded token:", decoded);
+
+module.exports = { generateServiceToken, verifyServiceToken };

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kun Khmer Mobile Top-Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/webp" sizes="32x32" href="images/game-logo-32x32.webp">
+  <link rel="icon" type="image/webp" sizes="16x16" href="images/game-logo-16x16.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/game-logo-180x180.webp">
+  <link rel="shortcut icon" href="game-logo.icon" type="image/Logo.webp">
+  <style>
+    html.lang-km body,
+    html.lang-km * {
+      font-family: 'Battambang', sans-serif;
+    }
+    #lang-toggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 1000;
+      display: flex;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+      backdrop-filter: blur(6px);
+    }
+    #lang-toggle button {
+      padding: 4px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      color: #ccc;
+      background: transparent;
+      letter-spacing: 0.03em;
+    }
+    #lang-toggle button.active {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 1px 6px rgba(220,38,38,0.5);
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans min-h-screen">
+
+  <!-- Language Toggle -->
+  <div id="lang-toggle" aria-label="Language switcher">
+    <button id="btn-km" class="active" onclick="setLang('km')">ខ្មែរ</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+
+  <!-- Header -->
+  <header class="py-4 px-4 flex items-center bg-red-800 shadow-lg">
+    <img src="images/Logo.webp" alt="Kun Khmer Logo" class="h-12 w-12 mr-3">
+    <div class="text-center flex-1">
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide drop-shadow-lg">
+        Kun Khmer Mobile Top-Up
+      </h1>
+      <p class="mt-1 text-sm md:text-base text-yellow-300 i18n"
+         data-km="បញ្ចូលកាក់ ឬទិញកាត VIP ភ្លាមៗ!"
+         data-en="Instantly add coins or activate VIP access!"></p>
+    </div>
+  </header>
+
+  <main class="px-4 py-8 max-w-md mx-auto">
+
+    <!-- Step 1 -->
+    <section class="mb-6">
+      <div class="px-3 py-2 rounded-t font-bold text-lg text-white bg-gradient-to-r from-red-600 to-red-800 i18n"
+           data-km="ជំហានទី១៖ បញ្ចូល Player ID"
+           data-en="Step 1: Enter Player ID"></div>
+      <div class="bg-gray-800 p-4 rounded-b space-y-3 shadow-inner">
+        <input type="text" id="player-id"
+               class="w-full p-3 rounded text-gray-900 focus:ring-2 focus:ring-red-500 i18n-placeholder"
+               data-km="Player ID របស់អ្នក"
+               data-en="Your Player ID">
+      </div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="mb-6">
+      <div class="px-3 py-2 rounded-t font-bold text-lg text-white bg-gradient-to-r from-red-600 to-red-800 i18n"
+           data-km="ជំហានទី២៖ ជ្រើសរើសកញ្ចប់"
+           data-en="Step 2: Choose a Pack"></div>
+      <div class="bg-gray-800 p-4 rounded-b shadow-inner grid grid-cols-2 md:grid-cols-3 gap-3">
+        <button class="topup-btn bg-red-600 hover:bg-red-500 px-4 py-2 rounded shadow-md font-semibold text-sm md:text-base"
+            data-pack="500 RP" data-display="500 RP + 50 Bonus" data-price="0.99">
+          500 RP + 50 Bonus
+        </button>
+        <button class="topup-btn bg-red-600 hover:bg-red-500 px-4 py-2 rounded shadow-md font-semibold text-sm md:text-base"
+                data-pack="1500 RP" data-display="1500 RP + 200 Bonus" data-price="2.99">
+            1500 RP + 200 Bonus
+        </button>
+        <button class="topup-btn bg-red-600 hover:bg-red-500 px-4 py-2 rounded shadow-md font-semibold text-sm md:text-base"
+                data-pack="3000 RP" data-display="3000 RP + 400 Bonus" data-price="4.99">
+            3000 RP + 400 Bonus
+        </button>
+        <button class="topup-btn bg-red-600 hover:bg-red-500 px-4 py-2 rounded shadow-md font-semibold text-sm md:text-base"
+                data-pack="6000 RP" data-display="6000 RP + 800 Bonus" data-price="9.99">
+            6000 RP + 800 Bonus
+        </button>
+        <button class="topup-btn bg-red-600 hover:bg-red-500 px-4 py-2 rounded shadow-md font-semibold text-sm md:text-base flex items-center justify-center relative vip-crown"
+                data-pack="VIP Membership" data-display="VIP Pass" data-price="2.99">
+            VIP Pass
+            <img src="images/VIP_PASS.webp" alt="VIP Crown" class="ml-2 h-5 w-5">
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 3 -->
+    <section class="mb-6">
+      <div class="px-3 py-2 rounded-t font-bold text-lg text-white bg-gradient-to-r from-red-600 to-red-800 i18n"
+           data-km="ជំហានទី៣៖ ជ្រើសរើសវិធីបង់ប្រាក់"
+           data-en="Step 3: Choose a Payment Method"></div>
+      <div class="bg-gray-800 p-4 rounded-b space-y-3 shadow-inner">
+        <button id="aba-btn" class="w-full bg-red-600 hover:bg-red-500 px-3 py-2 rounded flex items-center justify-between shadow-md">
+          <div class="flex items-center space-x-2">
+            <img src="images/ABA_Bank.webp" alt="ABA Bank Logo" class="h-6 w-auto">
+            <span>ABA Bank</span>
+          </div>
+          <span id="aba-price" class="text-yellow-300 font-semibold">$0.99</span>
+        </button>
+        <button id="acleda-btn" class="w-full bg-red-600 hover:bg-red-500 px-3 py-2 rounded flex items-center justify-between shadow-md">
+          <div class="flex items-center space-x-2">
+            <img src="images/Acleda_Bank.webp" alt="ACLEDA Bank Logo" class="h-6 w-auto">
+            <span>ACLEDA Bank</span>
+          </div>
+          <span id="acleda-price" class="text-yellow-300 font-semibold">$0.99</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 4 -->
+    <section class="mb-6">
+      <div class="px-3 py-2 rounded-t font-bold text-lg text-white bg-gradient-to-r from-red-600 to-red-800 i18n"
+           data-km="ជំហានទី៤៖ ទំនាក់ទំនង (មិនចាំបាច់)"
+           data-en="Step 4: Optional Contact"></div>
+      <div class="bg-gray-800 p-4 rounded-b space-y-3 shadow-inner">
+        <input type="text" id="contact-info"
+               class="w-full p-3 rounded text-gray-900 focus:ring-2 focus:ring-red-500 i18n-placeholder"
+               data-km="លេខទូរស័ព្ទ (មិនចាំបាច់)"
+               data-en="Phone Number (Optional)">
+      </div>
+    </section>
+
+    <!-- Submit -->
+    <button id="submit-order"
+            class="w-full bg-yellow-500 hover:bg-yellow-600 py-3 rounded font-bold text-gray-900 shadow-lg transition-all duration-200 i18n"
+            data-km="បញ្ជូនការបញ្ជាទិញ"
+            data-en="Submit Order"></button>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-gray-800 rounded-lg shadow-xl w-96 p-6 relative">
+        <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+        <div id="order-confirmation" class="mt-2 p-4 bg-green-700 text-white rounded shadow-md hidden"></div>
+        <div id="payment-profile" class="flex items-center justify-center mb-4 hidden">
+          <img id="payment-avatar" src="images/default_avatar.webp" alt="Avatar" class="h-12 w-12 rounded-lg border-2 border-yellow-400 mr-3 shadow object-cover">
+          <p id="payment-name" class="text-white font-semibold text-lg">Player Name</p>
+        </div>
+        <h3 class="text-xl font-bold text-yellow-300 mb-3 text-center i18n"
+            data-km="បញ្ចប់ការទូទាត់របស់អ្នក"
+            data-en="Complete Your Payment"></h3>
+        <img id="qr-image" class="mx-auto rounded shadow-md w-64">
+        <p id="payment-timer" class="mt-3 text-red-400 font-bold text-center"></p>
+        <div class="mt-4 bg-black p-3 rounded text-center">
+          <p class="text-gray-400 text-sm mb-1 i18n"
+             data-km="លេខកូដកំណត់សម្គាល់ការផ្ទេរ"
+             data-en="Transfer Note"></p>
+          <span id="payment-note" class="text-xl font-bold text-white block mb-3"></span>
+          <button id="copy-note"
+                  class="bg-yellow-500 hover:bg-yellow-600 text-black px-3 py-1 rounded text-sm i18n"
+                  data-km="កូពី"
+                  data-en="Copy"></button>
+        </div>
+        <p class="mt-4 text-gray-300 text-sm text-center">
+          <span class="i18n"
+                data-km="វាយលេខកូដនេះក្នុង"
+                data-en="Paste this code in"></span>
+          <span id="note-type" class="text-yellow-300 font-semibold mx-1"></span>
+          <span class="i18n"
+                data-km="នៅពេលផ្ទេរប្រាក់។"
+                data-en="when making the transfer."></span>
+        </p>
+        <p class="mt-2 text-red-400 font-bold text-center text-sm">
+          <span class="i18n"
+                data-km="ហាមផ្ទេរប្រាក់ឆ្លងធនាគារ!"
+                data-en="Do not transfer across banks!"></span>
+        </p>
+        <div id="payment-instructions" class="mt-5">
+          <p class="text-yellow-300 font-bold text-center text-sm mb-3 uppercase tracking-wide i18n"
+             data-km="របៀបទូទាត់ប្រាក់"
+             data-en="How to Pay"></p>
+          <div class="flex flex-col gap-3">
+            <div class="relative">
+              <span class="absolute -top-2 -left-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center z-10">1</span>
+              <img id="instruction-step1" src="" alt="Step 1" class="w-full rounded-lg shadow-md border border-gray-600">
+            </div>
+            <div class="relative">
+              <span class="absolute -top-2 -left-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center z-10">2</span>
+              <img id="instruction-step2" src="" alt="Step 2" class="w-full rounded-lg shadow-md border border-gray-600">
+            </div>
+            <div class="relative">
+              <span class="absolute -top-2 -left-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center z-10">3</span>
+              <img id="instruction-step3" src="" alt="Step 3" class="w-full rounded-lg shadow-md border border-gray-600">
+            </div>
+          </div>
+        </div>
+        <button id="cancel-order"
+                class="mt-4 w-full bg-gray-600 hover:bg-gray-500 py-3 rounded font-bold text-white shadow-lg transition-all duration-200 i18n"
+                data-km="បោះបង់ការបញ្ជាទិញ"
+                data-en="Cancel Order"></button>
+      </div>
+
+      <div id="modal-toast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+        Toast message
+      </div>
+    </div>
+
+    <!-- Global Toast -->
+    <div id="global-toast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-50">
+      Toast message
+    </div>
+
+    <!-- Confirm Cancel Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+      <div class="bg-gray-800 p-6 rounded max-w-sm w-full">
+        <p class="mb-4 text-white i18n"
+           data-km="ការបញ្ជាទិញកំពុងដំណើរការ។ បោះបង់ និងបិទ?"
+           data-en="Order in progress. Cancel and close?"></p>
+        <div class="flex justify-end gap-4">
+          <button id="confirm-no" class="px-4 py-2 bg-gray-600 text-white rounded i18n" data-km="ទេ" data-en="No"></button>
+          <button id="confirm-yes" class="px-4 py-2 bg-red-500 text-white rounded i18n" data-km="បាទ/ចាស" data-en="Yes"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- How to find IDs -->
+    <section class="mt-8 bg-gray-800 p-4 rounded text-left shadow-inner">
+      <h3 class="text-lg font-bold mb-2 text-yellow-300 i18n"
+          data-km="វិធីរក Player ID របស់អ្នក"
+          data-en="Locate your Player ID"></h3>
+      <ol class="list-decimal list-inside text-gray-300 space-y-1">
+        <li class="i18n"
+            data-km="ចូល Kun Khmer Mobile។"
+            data-en="Login to Kun Khmer Mobile."></li>
+        <li class="i18n"
+            data-km="ចុចលើរូបភាពប្រូហ្វាល់របស់អ្នកនៅជ្រុងខាងលើឆ្វេង។"
+            data-en="Tap your avatar in the top-left corner."></li>
+        <li class="i18n"
+            data-km='រក Player ID របស់អ្នក (ឧ. ID="DD2807F1E32EA50A")។'
+            data-en='Find your Player ID (e.g., ID="DD2807F1E32EA50A").'>
+        </li>
+        <li class="i18n"
+            data-km="កូពីវាដោយចុចលើរូបកូពី។"
+            data-en="Copy it by tapping the copy icon."></li>
+      </ol>
+      <img src="images/Find_Id.webp" alt="ID Example" class="mt-2 rounded shadow-md">
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-gray-400 text-sm">
+    &copy; 2026 Kun Khmer Mobile.
+    <span class="i18n" data-km="រក្សាសិទ្ធិគ្រប់យ៉ាង។" data-en="All rights reserved."></span>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    // ── i18n engine ──────────────────────────────────────────────
+    let currentLang = 'km';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+
+      document.getElementById('btn-km').classList.toggle('active', lang === 'km');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.documentElement.classList.toggle('lang-km', lang === 'km');
+      document.documentElement.classList.toggle('lang-en', lang === 'en');
+
+      // Swap text content
+      document.querySelectorAll('.i18n').forEach(el => {
+        const text = el.dataset[lang];
+        if (text !== undefined) el.textContent = text;
+      });
+
+      // Swap placeholders
+      document.querySelectorAll('.i18n-placeholder').forEach(el => {
+        const text = el.dataset[lang];
+        if (text !== undefined) el.placeholder = text;
+      });
+
+      try { localStorage.setItem('kkm-lang', lang); } catch(e) {}
+    }
+
+    function setLang(lang) { applyLang(lang); }
+
+    // On load: restore saved preference, default to 'km'
+    (function() {
+      let saved = 'km';
+      try { saved = localStorage.getItem('kkm-lang') || 'km'; } catch(e) {}
+      applyLang(saved);
+    })();
+  </script>
+</body>
+</html>

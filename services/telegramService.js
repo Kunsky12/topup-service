@@ -1,0 +1,30 @@
+// services/telegramService.js
+const TelegramBot = require('node-telegram-bot-api');
+const orderService = require('./orderService'); // <-- missing import
+require('dotenv').config();
+
+const token = process.env.TELEGRAM_BOT_TOKEN || "8729185382:AAEqgFPzkU7cmqxmU1hfexy6HzU5XDM14qA";
+const GROUP_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || 1003822499318;
+
+if (!token || !GROUP_CHAT_ID) {
+    console.warn("Telegram bot token or group chat ID not set!");
+}
+
+// send message function (used by orderService)
+exports.sendMessage = async (text) => {
+    try {
+        const res = await bot.sendMessage(
+            GROUP_CHAT_ID,
+            text,
+            { parse_mode: "Markdown" } // <-- add this
+        );
+
+        console.log("Message sent:", res.text);
+
+    } catch (err) {
+
+        console.error("Telegram send failed:", err.message);
+
+    }
+
+};

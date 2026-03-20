@@ -1,0 +1,36 @@
+/* ---------------- Modal Overlay ---------------- */
+#payment-modal {
+  position: fixed;
+  inset: 0;                   /* cover full viewport */
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  overflow: auto;
+  padding: 1rem;
+
+  /* Fix horizontal scroll */
+  box-sizing: border-box;     /* include padding in width */
+}
+
+/* ---------------- Modal Content Box ---------------- */
+#payment-modal > div {
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 24rem;           /* Tailwind w-96 */
+  background: #1f2937;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+
+  /* Fix horizontal scroll */
+  box-sizing: border-box;
+}
+
+/* Prevent scrolling when modal open */
+.modal-open-no-scroll {
+  overflow: hidden !important;
+  height: 100% !important;
+  width: 100% !important;
+}
