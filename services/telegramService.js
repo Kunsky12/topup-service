@@ -10,6 +10,9 @@ if (!token || !GROUP_CHAT_ID) {
     console.warn("Telegram bot token or group chat ID not set!");
 }
 
+// Initialize bot instance (was missing entirely)
+const bot = new TelegramBot(token, { polling: false });
+
 // send message function (used by orderService)
 exports.sendMessage = async (text) => {
     try {
