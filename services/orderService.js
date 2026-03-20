@@ -12,7 +12,7 @@ require("dotenv").config();
 
 const EXPIRATION_TIME = (Number(process.env.ORDER_EXPIRATION) || 5) * 60 * 1000;
 const NOTIFY_URL = process.env.WEBSOCKET_URL;
-const dbFile = path.resolve(__dirname, "../db.sqlite"); // adjust if your db path differs
+const dbFile = path.resolve(__dirname, "../db.sqlite");
 
 // ------------------------
 // Helper Functions
@@ -29,7 +29,7 @@ async function generate4DigitCode() {
 
     while (exists) {
         code = Math.floor(1000 + Math.random() * 9000).toString();
-        const order = await repo.findPendingByCode(code); // check ALL orders
+        const order = await repo.findPendingByCode(code);
         if (!order) exists = false;
     }
 
@@ -94,28 +94,56 @@ exports.createOrder = async function(playerId, type, pack, amount, paymentMethod
 
     try {
         await telegram.sendMessage(
-            `📝 *Order Created*\n👤 Player ID: ${playerId}\n📦 Coins Pack: ${pack}\n💰 Amount: $${amount}\n🆔 Order Code: ${code}\n⏱ Status: PENDING\n📅 Created At: ${formatDate(createdAt)}`
+            `📝 *Order Created*\n` +
+            `👤 Player ID: ${playerId}\n` +
+            `📦 Coins Pack: ${pack}\n` +
+            `💰 Amount: $${amount}\n` +
+            `🆔 Order Code: ${code}\n` +
+            `📞 Contact: ${contactInfo || 'N/A'}\n` +
+            `💳 Payment: ${paymentMethod}\n` +
+            `⏱ Status: PENDING\n` +
+            `📅 Created At: ${formatDate(createdAt)}`
         );
-    } catch (err) { console.error("❌ Failed to send Telegram message for order creation:", err); }
+    } catch (err) { 
+        console.error("❌ Failed to send Telegram message for order creation:", err); 
+    }
 
     return { success: true, orderData: { orderCode: code, profile } };
 }
 
-exports.verifyPayment=async function(code, amount) {
+exports.verifyPayment = async function(code, amount) {
+    console.log(`🔍 Verifying payment - Code: "${code}", Amount: $${amount}`);
+    
     const order = await repo.findPendingByCode(code);
+    
     if (!order) {
-        await telegram.sendMessage(`❌ Order not found\nCode: ${code}`);
+        await telegram.sendMessage(
+            `❌ *Order Not Found*\n` +
+            `🆔 Code: ${code}\n` +
+            `💰 Amount Received: $${amount}`
+        );
         return false;
     }
 
     if (order.status !== "PENDING") {
-        await telegram.sendMessage(`❌ Order already paid or invalid\nCode: ${code}`);
+        await telegram.sendMessage(
+            `❌ *Order Already Processed*\n` +
+            `🆔 Code: ${code}\n` +
+            `⏱ Status: ${order.status}\n` +
+            `📞 Contact: ${order.contactInfo || 'N/A'}`
+        );
         return false;
     }
 
     if (order.amount != amount) {
         await telegram.sendMessage(
-            `❌ Amount mismatch\nCode: ${code}\nExpected: $${order.amount}, Received: $${amount}`
+            `❌ *Amount Mismatch*\n` +
+            `🆔 Code: ${code}\n` +
+            `👤 Player ID: ${order.playerId}\n` +
+            `📞 Contact: ${order.contactInfo || 'N/A'}\n` +
+            `💵 Expected: $${order.amount}\n` +
+            `💵 Received: $${amount}\n` +
+            `⚠️ Please contact customer for clarification`
         );
         return false;
     }
@@ -135,7 +163,15 @@ exports.verifyPayment=async function(code, amount) {
         coinResult = await playfab.addCoins(order.playerId, coins);
 
         await telegram.sendMessage(
-            `✅ *Top-Up Success*\n👤 Player ID: ${order.playerId}\n📦 Coins Pack: ${order.pack}\n💰 Amount: $${order.amount}\n🪙 Coins Received: ${coins}\n🆔 Order Code: ${order.code}\n📅 Paid At: ${formatDate(paidAt)}`
+            `✅ *Top-Up Success*\n` +
+            `👤 Player ID: ${order.playerId}\n` +
+            `📦 Coins Pack: ${order.pack}\n` +
+            `💰 Amount: $${order.amount}\n` +
+            `🪙 Coins Received: ${coins}\n` +
+            `🆔 Order Code: ${order.code}\n` +
+            `📞 Contact: ${order.contactInfo || 'N/A'}\n` +
+            `💳 Payment Method: ${order.paymentMethod}\n` +
+            `📅 Paid At: ${formatDate(paidAt)}`
         );
 
         await sendTopUpNotification(order.playerId, order.code, coins);
@@ -144,7 +180,14 @@ exports.verifyPayment=async function(code, amount) {
         coinResult = await playfab.addVipMembership(order.playerId);
 
         await telegram.sendMessage(
-            `👑 *VIP Activated*\n👤 Player ID: ${order.playerId}\n🎁 Granted Bonus: 550 RP\n💰 Amount: $${order.amount}\n🆔 Order Code: ${order.code}\n📅 Paid At: ${formatDate(paidAt)}`
+            `👑 *VIP Activated*\n` +
+            `👤 Player ID: ${order.playerId}\n` +
+            `🎁 Granted Bonus: 550 RP\n` +
+            `💰 Amount: $${order.amount}\n` +
+            `🆔 Order Code: ${order.code}\n` +
+            `📞 Contact: ${order.contactInfo || 'N/A'}\n` +
+            `💳 Payment Method: ${order.paymentMethod}\n` +
+            `📅 Paid At: ${formatDate(paidAt)}`
         );
 
         await sendTopUpNotification(order.playerId, order.code, 550);
@@ -159,32 +202,50 @@ exports.verifyPayment=async function(code, amount) {
     });
 
     if (updated === 0) {
-        await telegram.sendMessage(`⚠️ Duplicate payment prevented\nCode: ${code}`);
+        await telegram.sendMessage(
+            `⚠️ *Duplicate Payment Prevented*\n` +
+            `🆔 Code: ${code}\n` +
+            `📞 Contact: ${order.contactInfo || 'N/A'}`
+        );
         return false;
     }
 
     return true;
 }
 
-exports.getOrder =async function(orderCode) {
+exports.getOrder = async function(orderCode) {
     if (!orderCode) throw new Error('orderCode is required');
 
-    const order = await repo.findPendingByCode(orderCode); // fetch from DB
+    const order = await repo.findPendingByCode(orderCode);
     if (!order) {
         return { status: 'NOT_FOUND' };
     }
 
-    // Return simplified status
     return { status: order.status, order };
 }
 
-exports.cancelOrder=async function(orderCode) {
+exports.cancelOrder = async function(orderCode) {
     const order = await repo.findPendingByCode(orderCode);
     if (!order || order.status !== "PENDING") return false;
 
     const deleted = await repo.deleteByCode(orderCode);
-    if (deleted) console.log(`✅ Expired order ${orderCode} deleted.`);
-    else console.error(`❌ Failed to delete order ${orderCode}`);
+    if (deleted) {
+        console.log(`✅ Cancelled order ${orderCode}`);
+        
+        try {
+            await telegram.sendMessage(
+                `🚫 *Order Cancelled*\n` +
+                `🆔 Code: ${orderCode}\n` +
+                `👤 Player ID: ${order.playerId}\n` +
+                `📞 Contact: ${order.contactInfo || 'N/A'}\n` +
+                `💰 Amount: $${order.amount}`
+            );
+        } catch (err) {
+            console.error("❌ Failed to send cancellation message:", err);
+        }
+    } else {
+        console.error(`❌ Failed to delete order ${orderCode}`);
+    }
 
     return deleted;
 }
@@ -201,6 +262,6 @@ async function cleanupPendingOrders() {
     }
 }
 
-setInterval(cleanupPendingOrders, 60 * 1000); // run every 1 minute
-cron.schedule("0 2 * * 0", backupDatabase);    // weekly backup every Sunday 2:00 AM
-cleanupPendingOrders();                        // run once at startup
+setInterval(cleanupPendingOrders, 60 * 1000);
+cron.schedule("0 2 * * 0", backupDatabase);
+cleanupPendingOrders();
