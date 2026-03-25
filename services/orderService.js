@@ -75,7 +75,7 @@ async function sendTopUpNotification(receiverId, orderCode, amount) {
 // ------------------------
 // Core Service Functions
 // ------------------------
-exports.createOrder = async function(playerId, type, pack, amount, paymentMethod, contactInfo) {
+exports.createOrder = async function(playerId, type, pack, amount, paymentMethod, contactInfo, preFetchedProfile = null) {
     const createdAt = Date.now();
     let code, created = false;
 
@@ -90,7 +90,8 @@ exports.createOrder = async function(playerId, type, pack, amount, paymentMethod
         }
     }
 
-    const profile = await playfab.fetchPlayerProfile(playerId);
+    // Use pre-fetched profile if provided, otherwise fetch now
+    const profile = preFetchedProfile ?? await playfab.fetchPlayerProfile(playerId);
 
     try {
         await telegram.sendMessage(
@@ -104,12 +105,12 @@ exports.createOrder = async function(playerId, type, pack, amount, paymentMethod
             `⏱ Status: PENDING\n` +
             `📅 Created At: ${formatDate(createdAt)}`
         );
-    } catch (err) { 
-        console.error("❌ Failed to send Telegram message for order creation:", err); 
+    } catch (err) {
+        console.error("❌ Failed to send Telegram message for order creation:", err);
     }
 
     return { success: true, orderData: { orderCode: code, profile } };
-}
+};
 
 exports.verifyPayment = async function(code, amount) {
     console.log(`🔍 Verifying payment - Code: "${code}", Amount: $${amount}`);
