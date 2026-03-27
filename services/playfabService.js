@@ -1,10 +1,8 @@
-// services/playfabService.js
-require('dotenv').config();
-
 const PlayFab = require("playfab-sdk");
 
-PlayFab.settings.titleId = process.env.PLAYFAB_TITLE_ID;
-PlayFab.settings.developerSecretKey = process.env.PLAYFAB_SECRET;
+// Set for PlayFabServer explicitly
+PlayFab.PlayFabServer.settings.titleId = process.env.PLAYFAB_TITLE_ID;
+PlayFab.PlayFabServer.settings.developerSecretKey = process.env.PLAYFAB_SECRET_KEY;
 
 // Add coins
 exports.addCoins = async (playerId, amount) => {

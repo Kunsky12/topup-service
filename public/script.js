@@ -188,10 +188,31 @@ submitBtn.addEventListener("click", async () => {
       })
     });
 
+    // DEBUG: See what the server actually sent
+    console.log("Response Status:", response.status); 
+
+    // Handle non-200 responses
+    if (!response.ok) {
+      console.warn("Server responded with status:", response.status);
+      
+      if (response.status === 400 || response.status === 404) {
+        showGlobalToast(t('invalidProfile')); // Displays: Player ID មិនត្រឹមត្រូវ
+      } else {
+        showGlobalToast(t('serverError'));
+      }
+      resetSubmitButton();
+      return; // Stop here!
+    }
+      
     const data = await response.json();
 
-    if (!data.success || !data.orderData) throw new Error("Backend failed to create order.");
+    if (!data.orderData) {
+      showGlobalToast(t('serverError'));
+      resetSubmitButton();
+      return;
+    }
 
+    // Extract order info
     const orderData  = data.orderData;
     const orderCode  = orderData.orderCode;
     const profile    = orderData.profile || {};
@@ -204,13 +225,12 @@ submitBtn.addEventListener("click", async () => {
       return;
     }
 
+    // Show payment profile
     paymentProfile.classList.remove("hidden");
 
     avatarUrlGlobal   = profile.avatarUrl || "";
-    paymentAvatar.src = (avatarUrlGlobal && avatarUrlGlobal.trim() !== "")
-      ? avatarUrlGlobal
-      : "images/default_avatar.webp";
-    paymentAvatar.onerror   = () => { paymentAvatar.src = "images/default_avatar.webp"; };
+    paymentAvatar.src = avatarUrlGlobal.trim() !== "" ? avatarUrlGlobal : "images/default_avatar.webp";
+    paymentAvatar.onerror = () => { paymentAvatar.src = "images/default_avatar.webp"; };
     paymentName.textContent = profile.displayName || "Unknown Player";
 
     qrImage.src = selectedPayment === "ABA Bank"

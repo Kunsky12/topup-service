@@ -4,37 +4,34 @@ const router = express.Router();
 const orderService = require("../services/orderService"); // make sure this is the correct path
 const playfabService = require("../services/playfabService")
 
-// Create a new top-up order
 router.post("/create", async (req, res) => {
     try {
-        const { playerId, type, pack, amount, paymentMethod, contactInfo } = req.body;
+        const { type, pack, amount, paymentMethod, contactInfo } = req.body;
+        const playerId = req.body.playerId?.trim();
 
-        // 1. Validate playerId is provided
-        if (!playerId) {
-            return res.status(400).json({ success: false, message: "playerId is required." });
+        // Guard: Use the 'i' flag for case-insensitive hex matching
+        if (!playerId || !/^[0-9A-Fa-f]{16}$/i.test(playerId)) {
+            console.log("INCORRECT ID FORMAT:", playerId);
+            return res.status(400).json({ success: false, error: "invalid_format" });
         }
 
-        // 2. Pre-check: verify player exists on PlayFab
-        const profile = await fetchPlayerProfile(playerId);
+        const profile = await playfabService.fetchPlayerProfile(playerId);
 
-        if (displayName === "Unknown") {
-            return res.status(404).json({
-                success: false,
-                message: `Player ID "${playerId}" was not found on PlayFab.`
-            });
+        if (!profile || profile.displayName === "Unknown") {
+            console.log("PLAYFAB ID NOT FOUND:", playerId);
+            return res.status(404).json({ success: false, error: "not_found" });
         }
-        
- 
+
         const result = await orderService.createOrder(
             playerId,
             type,
             pack,
             amount,
             paymentMethod,
-            contactInfo || null,   // pass null if empty/missing
-            profile  // <-- pass it through
+            contactInfo || null,
+            profile
         );
- 
+
         res.json(result);
 
     } catch (err) {
