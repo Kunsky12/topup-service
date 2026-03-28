@@ -3,8 +3,8 @@ const TelegramBot = require('node-telegram-bot-api');
 const orderService = require('./orderService'); // <-- missing import
 require('dotenv').config();
 
-const token = process.env.TELEGRAM_BOT_TOKEN || "8729185382:AAEqgFPzkU7cmqxmU1hfexy6HzU5XDM14qA";
-const GROUP_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || 1003822499318;
+const token = process.env.TELEGRAM_BOT_TOKEN;
+const GROUP_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
 
 if (!token || !GROUP_CHAT_ID) {
     console.warn("Telegram bot token or group chat ID not set!");
