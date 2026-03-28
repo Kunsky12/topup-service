@@ -1,6 +1,6 @@
 // services/telegramService.js
 const TelegramBot = require('node-telegram-bot-api');
-const orderService = require('./orderService'); // <-- missing import
+const orderService = require('./orderService'); 
 require('dotenv').config();
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
