@@ -14,9 +14,7 @@ const EXPIRATION_TIME = (Number(process.env.ORDER_EXPIRATION) || 5) * 60 * 1000;
 const NOTIFY_URL = process.env.WEBSOCKET_URL;
 const dbFile = path.resolve(__dirname, "../db.sqlite");
 
-// ------------------------
 // Helper Functions
-// ------------------------
 function formatDate(ts) {
     const date = new Date(ts);
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} at ` +
