@@ -8,11 +8,7 @@ if (!SECRET_KEY) {
     console.error("JWT_SECRET_KEY is not set in environment variables");
     process.exit(1); // Or handle this appropriately
 }
-
-/**
  * Generate a JWT token for service-to-service authentication
- * @returns {string} JWT token
- */
 function generateServiceToken() {
     try {
         const payload = {
