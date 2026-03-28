@@ -117,10 +117,6 @@ exports.fetchPlayerProfile = async (playFabId) => {
         const displayName = profileResp.data.PlayerProfile?.DisplayName || "Unknown";
         const avatarUrl = profileResp.data.PlayerProfile?.AvatarUrl || "";
 
-        // Coins are stored as VC "RP", VIP as a bool in player data (example)
-        //const coins = statsResp.data.VirtualCurrency?.RP || 0;
-        //const vip = statsResp.data.PlayerData?.isPaidSser?.Value === "true";
-
         return {displayName, avatarUrl};
 
     } catch (err) {
