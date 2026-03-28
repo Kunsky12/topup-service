@@ -70,9 +70,7 @@ async function sendTopUpNotification(receiverId, orderCode, amount) {
     }
 }
 
-// ------------------------
 // Core Service Functions
-// ------------------------
 exports.createOrder = async function(playerId, type, pack, amount, paymentMethod, contactInfo, preFetchedProfile = null) {
     const createdAt = Date.now();
     let code, created = false;
@@ -249,9 +247,7 @@ exports.cancelOrder = async function(orderCode) {
     return deleted;
 }
 
-// ------------------------
 // Cleanup and Backup
-// ------------------------
 async function cleanupPendingOrders() {
     try {
         const deleted = await repo.deleteExpiredOrders(EXPIRATION_TIME);
